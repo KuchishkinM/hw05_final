@@ -144,8 +144,6 @@ class FollowPagesTests(TestCase):
     def test_auth_user_follow_or_unfollow(self):
         """Авторизованный пользователь может подписываться на других
         пользователей и удалять их из подписок."""
-        response = self.follower_client.get(
-            reverse('posts:profile', kwargs={'username': self.author}))
         follow = Follow.objects.get(id=1)
         self.assertEqual(follow.id, self.follow.id)
         follow.delete()

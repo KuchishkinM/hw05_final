@@ -83,7 +83,7 @@ class PostCreateFormTests(TestCase):
         self.assertRedirects(response, reverse('posts:post_detail',
                                                kwargs={'post_id': post_id}))
         self.assertEqual(Comment.objects.count(), comment_count + 1)
-        last_comment = Comment.objects.all().last()
+
 
     @classmethod
     def tearDownClass(cls):
