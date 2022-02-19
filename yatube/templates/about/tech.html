@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}
+  Технологии
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+<div class="row">
+  <h1>Процесс создания</h1>
+  <h3>Что применялось:</h3>
+  {% load static %}
+    <link rel="stylesheet" href="{% static 'css/tech.css'%}">
+  <aside class="col-12 col-md-3">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+        Python
+          <img src="{% static 'img/python.png' %}" width="140" height="120" class="d-inline-block align-top image-margin" alt="">
+      </li>
+      <li class="list-group-item">
+        Django
+          <img src="{% static 'img/django.png' %}" width="140" height="120" class="d-inline-block align-top image-margin" alt="">
+      </li>
+      <li class="list-group-item">
+        HTML
+          <img src="{% static 'img/html.png' %}" width="140" height="120" class="d-inline-block align-top image-margin" alt="">
+      </li>
+      <li class="list-group-item">
+        CSS
+          <img src="{% static 'img/css.png' %}" width="160" height="120" class="d-inline-block align-top image-margin" alt="">
+      </li>
+    </ul>
+  </aside>
+  <article class="col-12 col-md-9">
+    <h3>Что получалось без многочасовых или дневных затыков:</h3>
+    <ol>
+      <li>HTML</li>
+      <li>CSS</li>
+    </ol>
+    <h3>Личный опыт от пройденного:</h3>
+    <p> Здесь список не уместен, да и в верхнем разделе я его тоже хотел убрать, но потом решил оставить. Могу же его сделать, поэтому пусть будет)
+    на самом деле в этом курсе я ничего простого пока не вижу. Каждую тему нужно досконально изучать и вникать, но для меня это очень интересно.
+    Я в какой-то момент начал печатать всю теорию на принтере и делать потом пометки. В итоге кусочки Яндекс.Практикум теперь лежат почти в каждом углу дома)
+    Это на самом деле мне очень помогает в изучении материала, так как начал даже помогать коллегам по курсу, это не может не радовать.
+    В общем огромная благодарность всем создателям и специалистам курса, вы огромные молодцы. И отдельное спасибо моему ревьюеру Алексею, за актуальные коменты и
+    терпение к моим тупнякам =)
+    </p>
+  </article>
+</div>
+{% endblock %}
