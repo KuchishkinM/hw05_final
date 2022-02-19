@@ -84,7 +84,6 @@ class PostCreateFormTests(TestCase):
                                                kwargs={'post_id': post_id}))
         self.assertEqual(Comment.objects.count(), comment_count + 1)
 
-
     @classmethod
     def tearDownClass(cls):
         super().tearDownClass()
