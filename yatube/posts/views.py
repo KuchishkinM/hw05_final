@@ -1,21 +1,10 @@
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator
 from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render, get_object_or_404, redirect
 
 from .forms import PostForm, CommentForm
 from .models import Post, Group, User, Follow
-
-COUNT_OF_POSTS_DEFAULT = 10
-
-
-def get_page_obj(posts: list,
-                 page_number: int,
-                 paginator_count_of_posts: int = COUNT_OF_POSTS_DEFAULT
-                 ) -> int:
-    paginator = Paginator(posts, paginator_count_of_posts)
-    page_obj = paginator.get_page(page_number)
-    return page_obj
+from .utils import get_page_obj
 
 
 def index(request: HttpRequest) -> HttpResponse:
@@ -24,8 +13,8 @@ def index(request: HttpRequest) -> HttpResponse:
     posts = Post.objects.select_related('author', 'group')
     page_number = request.GET.get('page')
     page_obj = get_page_obj(posts, page_number)
-
     context = {
+        'index': template,
         'page_obj': page_obj,
     }
     return render(request, template, context)
@@ -54,9 +43,11 @@ def profile(request: HttpRequest, username) -> HttpResponse:
     page_number = request.GET.get('page')
     page_obj = get_page_obj(posts, page_number)
 
-    following = False
     if request.user.is_authenticated:
-        following = Follow.objects.filter(user=request.user, author=author)
+        following = Follow.objects.filter(user=request.user,
+                                          author=author).exists()
+    else:
+        following = False
 
     context = {
         'following': following,
@@ -136,15 +127,17 @@ def add_comment(request, post_id):
 
 @login_required
 def follow_index(request):
+    template = 'posts/follow.html'
     follow_author_posts = Post.objects.select_related('author').filter(
         author__following__user=request.user)
     page_number = request.GET.get('page')
     page_obj = get_page_obj(follow_author_posts, page_number)
 
     context = {
+        'follow': template,
         'page_obj': page_obj,
     }
-    return render(request, 'posts/follow.html', context)
+    return render(request, template, context)
 
 
 @login_required

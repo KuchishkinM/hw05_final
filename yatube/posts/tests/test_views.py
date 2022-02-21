@@ -1,10 +1,10 @@
 from django import forms
+from django.conf import settings
 from django.core.cache import cache
 from django.test import TestCase, Client
 from django.urls import reverse
 
 from ..models import Post, Group, User, Follow
-from ..views import COUNT_OF_POSTS_DEFAULT
 
 
 class PostPagesTests(TestCase):
@@ -144,10 +144,19 @@ class FollowPagesTests(TestCase):
     def test_auth_user_follow_or_unfollow(self):
         """Авторизованный пользователь может подписываться на других
         пользователей и удалять их из подписок."""
-        follow = Follow.objects.get(id=1)
-        self.assertEqual(follow.id, self.follow.id)
-        follow.delete()
-        self.assertEqual(Follow.objects.count(), 0)
+        follow_count = Follow.objects.count()
+        self.unfollower_client.get(
+            reverse('posts:profile', kwargs={'username': self.author}))
+        self.follow = Follow.objects.create(
+            user=self.unfollower_user,
+            author=self.author,
+        )
+        self.assertEqual(Follow.objects.count(), follow_count + 1)
+        self.follow_del = Follow.objects.filter(
+            user=self.unfollower_user,
+            author=self.author,
+        ).delete()
+        self.assertEqual(Follow.objects.count(), follow_count)
 
     def test_follow_user_posts_in_line(self):
         """Новая запись пользователя появляется в ленте тех,
@@ -189,38 +198,41 @@ class PaginatorViewsTest(TestCase):
         """Проверка, что на страницу index попадает 10 постов."""
         response = self.client.get(reverse('posts:index'))
         self.assertEqual(len(response.context['page_obj']),
-                         COUNT_OF_POSTS_DEFAULT)
+                         settings.COUNT_OF_POSTS_DEFAULT)
 
     def test_group_list_page_contains_ten_records(self):
         """Проверка, что на страницу group_list попадает 10 постов."""
         response = self.client.get(
             reverse('posts:group_list', kwargs={'slug': 'test_slug'}))
         self.assertEqual(len(response.context['page_obj']),
-                         COUNT_OF_POSTS_DEFAULT)
+                         settings.COUNT_OF_POSTS_DEFAULT)
 
     def test_profile_page_contains_ten_records(self):
         """Проверка, что на страницу profile попадает 10 постов."""
         response = self.client.get(
             reverse('posts:profile', kwargs={'username': 'Noname'}))
         self.assertEqual(len(response.context['page_obj']),
-                         COUNT_OF_POSTS_DEFAULT)
+                         settings.COUNT_OF_POSTS_DEFAULT)
 
     def test_index_second_page_contains_three_records(self):
         """Проверка, что на 2-ую страницу index попадает 3 поста."""
         response = self.client.get(reverse('posts:index'), {'page': '2'})
         self.assertEqual(len(response.context['page_obj']),
-                         (Post.objects.count() - COUNT_OF_POSTS_DEFAULT))
+                         (Post.objects.count()
+                          - settings.COUNT_OF_POSTS_DEFAULT))
 
     def test_group_list_second_page_contains_three_records(self):
         """Проверка, что на 2-ую страницу group_list попадает 3 поста."""
         response = self.client.get(reverse('posts:group_list', kwargs={
             'slug': 'test_slug'}), {'page': '2'})
         self.assertEqual(len(response.context['page_obj']),
-                         (Post.objects.count() - COUNT_OF_POSTS_DEFAULT))
+                         (Post.objects.count()
+                          - settings.COUNT_OF_POSTS_DEFAULT))
 
     def test_profile_second_page_contains_three_records(self):
         """Проверка, что на 2-ую страницу profile попадает 3 поста."""
         response = self.client.get(reverse('posts:profile', kwargs={
             'username': 'Noname'}), {'page': '2'})
         self.assertEqual(len(response.context['page_obj']),
-                         (Post.objects.count() - COUNT_OF_POSTS_DEFAULT))
+                         (Post.objects.count()
+                          - settings.COUNT_OF_POSTS_DEFAULT))

@@ -44,8 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'sorl.thumbnail',
     'debug_toolbar',
+    'sorl.thumbnail',
 ]
 
 MIDDLEWARE = [
@@ -150,3 +150,9 @@ CACHES = {
 }
 
 CSRF_FAILURE_VIEW = 'core.views.csrf_failure'
+
+INTERNAL_IPS = [
+    '127.0.0.1'
+]
+
+COUNT_OF_POSTS_DEFAULT = 10

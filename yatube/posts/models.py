@@ -5,7 +5,6 @@ User = get_user_model()
 
 
 class Group(models.Model):
-    objects = models.Manager()
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
     description = models.TextField()
@@ -15,7 +14,6 @@ class Group(models.Model):
 
 
 class Post(models.Model):
-    objects = models.Manager()
     text = models.TextField()
     pub_date = models.DateTimeField(
         'Дата публикации',
@@ -49,7 +47,6 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
-    objects = models.Manager()
     post = models.ForeignKey(
         Post,
         on_delete=models.CASCADE,
@@ -65,7 +62,6 @@ class Comment(models.Model):
 
 
 class Follow(models.Model):
-    objects = models.Manager()
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,

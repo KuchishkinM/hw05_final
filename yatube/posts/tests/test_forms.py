@@ -52,6 +52,10 @@ class PostCreateFormTests(TestCase):
         self.assertEqual(Post.objects.count(), posts_count + 1)
         last_post = Post.objects.all().last().id
         self.assertTrue((Post.objects.filter(id=last_post)).exists())
+        self.assertEqual(Post.objects.get(id=last_post).group.id,
+                         self.group.pk)
+        self.assertEqual(Post.objects.get(id=last_post).text,
+                         self.post.text)
 
     def test_post_edit(self):
         form_data = {
@@ -82,6 +86,12 @@ class PostCreateFormTests(TestCase):
         )
         self.assertRedirects(response, reverse('posts:post_detail',
                                                kwargs={'post_id': post_id}))
+        last_comment = Comment.objects.all().last().id
+        self.assertTrue((Comment.objects.filter(id=last_comment)).exists())
+        self.assertEqual(Comment.objects.get(id=last_comment).post.id,
+                         self.post.id)
+        self.assertEqual(Comment.objects.get(id=last_comment).text,
+                         form_data['text'])
         self.assertEqual(Comment.objects.count(), comment_count + 1)
 
     @classmethod
@@ -123,8 +133,8 @@ class PostCreateFormTests(TestCase):
             Post.objects.filter(
                 group=self.group.pk,
                 text=self.post.text,
-                image='posts/small.gif',
-            ).exists()
+                image=self.post.image,
+            ).last()
         )
 
         response = self.client.get(reverse('posts:index'))
