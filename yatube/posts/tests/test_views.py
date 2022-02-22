@@ -141,22 +141,26 @@ class FollowPagesTests(TestCase):
         self.unfollower_client = Client()
         self.unfollower_client.force_login(self.unfollower_user)
 
-    def test_auth_user_follow_or_unfollow(self):
+    def test_auth_user_follow(self):
         """Авторизованный пользователь может подписываться на других
-        пользователей и удалять их из подписок."""
-        follow_count = Follow.objects.count()
+        пользователей."""
         self.unfollower_client.get(
-            reverse('posts:profile', kwargs={'username': self.author}))
-        self.follow = Follow.objects.create(
+            reverse('posts:profile_follow', kwargs={'username': self.author}))
+        self.assertTrue(Follow.objects.filter(
             user=self.unfollower_user,
             author=self.author,
-        )
-        self.assertEqual(Follow.objects.count(), follow_count + 1)
-        self.follow_del = Follow.objects.filter(
+        ).exists())
+
+    def test_auth_user_unfollow(self):
+        """Авторизованный пользователь может удалять других пользователей
+        из подписок."""
+        self.unfollower_client.get(
+            reverse('posts:profile_unfollow',
+                    kwargs={'username': self.author}))
+        self.assertFalse(Follow.objects.filter(
             user=self.unfollower_user,
             author=self.author,
-        ).delete()
-        self.assertEqual(Follow.objects.count(), follow_count)
+        ).exists())
 
     def test_follow_user_posts_in_line(self):
         """Новая запись пользователя появляется в ленте тех,
