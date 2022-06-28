@@ -1,0 +1,12 @@
+h1 {
+padding: 0 0 16px 0;
+color: #1A56DB;
+}
+h3 {
+padding: 0 0 16px 0;
+color: #1642A6;
+}
+.image-margin {
+    margin: 0px 0px 0px 40px;
+    border-radius: 5px;
+}
