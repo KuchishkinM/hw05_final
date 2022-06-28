@@ -24,11 +24,7 @@ urlpatterns = [
     path('about/', include('about.urls', namespace='about')),
     path('admin/', admin.site.urls),
 ]
-if settings.DEBUG:
-    import debug_toolbar
 
-    urlpatterns = [path('__debug__/',
-                        include(debug_toolbar.urls)), ] + urlpatterns
 
 handler404 = 'core.views.page_not_found'
 handler403 = 'core.views.permission_denied'
